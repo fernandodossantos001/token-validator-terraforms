@@ -62,9 +62,6 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
 
-    env:
-      TF_VAR_ssh_public_key: ${{ secrets.PUBLIC_KEY }}
-
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
       run:
@@ -87,29 +84,22 @@ jobs:
 
     # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
-      run: terraform fmt #-check
+      run: terraform fmt -check
 
-
-    - name: Debug TF_VAR_ssh_public_key
-      run: echo "${TF_VAR_ssh_public_key::10}********"    
-
-    - name: Show current directory and list files
-      run: |
-        pwd
-        ls -la      
-        cat variables.tf
-
-    - name: Print public key (safe test)
-      run: echo "${TF_VAR_ssh_public_key}" | head -c 20    
-
-      
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       run: terraform plan -input=false 
 
 
-      # On push to "main", build or change infrastructure according to Terraform configuration files
-      # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
-    # - name: Terraform Apply
-    #   if: github.ref == 'refs/heads/"main"' && github.event_name == 'push'
-    #   run: terraform apply -auto-approve -input=false
+  deploy:
+    name: 'Deploy'
+    runs-on: ubuntu-latest
+    needs: terraform    # Espera o job terraform terminar com sucesso
+    environment: production  # Aqui vai o environment que exige aprovação
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # - name: Terraform Apply
+      #   run: terraform apply -auto-approve -input=false
