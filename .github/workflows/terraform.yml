@@ -51,8 +51,7 @@ on:
     branches: [ "main" ]
   workflow_dispatch:  # Isso habilita execução manual
 
-env:
-  TF_VAR_ssh_public_key: ${{ secrets.PUBLIC_KEY }}
+
 
 permissions:
   contents: read
@@ -62,6 +61,9 @@ jobs:
     name: 'Terraform'
     runs-on: ubuntu-latest
     environment: production
+
+    env:
+      TF_VAR_ssh_public_key: ${{ secrets.PUBLIC_KEY }}
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
@@ -95,6 +97,7 @@ jobs:
       run: |
         pwd
         ls -la      
+        cat variables.tf
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       run: terraform plan -input=false 
