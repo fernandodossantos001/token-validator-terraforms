@@ -155,7 +155,8 @@ resource "aws_security_group" "security-group-token-validator" {
 
 resource "aws_key_pair" "key-pair-token-validator" {
   key_name   = "deployer-key"
-  public_key = file("/Users/developer/.ssh/token-validator-key.pub")
+  # public_key = file("/Users/developer/.ssh/token-validator-key.pub")
+    public_key = var.ssh_public_key
 
   tags = {
     Name = "key-pair-token-validator"
