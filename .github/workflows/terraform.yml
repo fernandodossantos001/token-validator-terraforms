@@ -87,6 +87,9 @@ jobs:
     - name: Terraform Format
       run: terraform fmt #-check
 
+    - name: Debug ssh_public_key
+      run: echo "ssh_public_key: $TF_VAR_ssh_public_key"
+
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       run: terraform plan -input=false
