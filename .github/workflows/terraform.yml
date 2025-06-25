@@ -98,6 +98,11 @@ jobs:
         pwd
         ls -la      
         cat variables.tf
+
+    - name: Print public key (safe test)
+      run: echo "${TF_VAR_ssh_public_key}" | head -c 20    
+
+      
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       run: terraform plan -input=false 
