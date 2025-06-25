@@ -42,23 +42,21 @@
 #       with:
 #         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-name: 'Deploy Terraform AWS '
+name: 'Destroy Terraform AWS '
 
 on:
   # push:
   #   branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  # pull_request:
+  #   branches: [ "main" ]
   workflow_dispatch:  # Isso habilita execução manual
-
-
 
 permissions:
   contents: read
 
 jobs:
-  build:
-    name: 'Verificação de terraform'
+  destroyInfraAws:
+    name: 'Excluindo recursos provisionados na AWS'
     runs-on: ubuntu-latest
     environment: production
 
@@ -71,52 +69,16 @@ jobs:
         shell: bash
 
     steps:
-    # Checkout the repository to the GitHub Actions runner
-    - name: Checkout
-      uses: actions/checkout@v4
-
-    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v1
-      with:
-        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-
-    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
-    - name: Terraform Init
-      run: terraform init
-
-    # Checks that all Terraform configuration files adhere to a canonical format
-    - name: Terraform Format
-      run: terraform fmt #-check
-
-
-    - name: Debug TF_VAR_ssh_public_key
-      run: echo "${TF_VAR_ssh_public_key::10}********"    
-
-    - name: Show current directory and list files
-      run: |
-        pwd
-        ls -la      
-        cat variables.tf
-
-    - name: Print public key (safe test)
-      run: echo "${TF_VAR_ssh_public_key}" | head -c 20    
-
-      
-    # Generates an execution plan for Terraform
-    - name: Terraform Plan
-      run: terraform plan -input=false 
-
-
-  deploy:
-    name: 'Provisionando Infra AWS'
-    runs-on: ubuntu-latest
-    needs: build    # Espera o job terraform terminar com sucesso
-    environment: production  # Aqui vai o environment que exige aprovação
-
-    steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve -input=false
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Destroy (Rollback)
+        run: terraform destroy -auto-approve -input=false
