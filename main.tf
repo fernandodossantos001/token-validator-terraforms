@@ -1,4 +1,15 @@
 terraform {
+
+  ###### PRORIEDADES PARA REALIZAR DEPLOY VIA ESTEIRA USANDO HCP
+
+  backend "remote" {
+    organization = "emock"
+    workspaces {
+      name = "terraform-github-actions"
+    }
+  }
+
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
