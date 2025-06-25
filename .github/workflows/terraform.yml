@@ -87,9 +87,8 @@ jobs:
     - name: Terraform Format
       run: terraform fmt #-check
 
-    - name: Debug ssh_public_key
-      run: echo "ssh_public_key: $TF_VAR_ssh_public_key"
-
+    - name: Print output
+      run: echo "Value is ${{ secrets.PUBLIC_KEY }} and  ${{ secrets.TF_API_TOKEN }}"
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       run: terraform plan -input=false
