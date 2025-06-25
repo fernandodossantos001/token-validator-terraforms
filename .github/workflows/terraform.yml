@@ -87,21 +87,7 @@ jobs:
 
     # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
-      run: terraform fmt #-check
-
-
-    - name: Debug TF_VAR_ssh_public_key
-      run: echo "${TF_VAR_ssh_public_key::10}********"    
-
-    - name: Show current directory and list files
-      run: |
-        pwd
-        ls -la      
-        cat variables.tf
-
-    - name: Print public key (safe test)
-      run: echo "${TF_VAR_ssh_public_key}" | head -c 20    
-
+      run: terraform fmt -check
       
     # Generates an execution plan for Terraform
     - name: Terraform Plan
