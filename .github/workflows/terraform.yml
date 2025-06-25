@@ -90,7 +90,11 @@ jobs:
 
     - name: Debug TF_VAR_ssh_public_key
       run: echo "${TF_VAR_ssh_public_key::10}********"    
-      
+
+    - name: Show current directory and list files
+      run: |
+        pwd
+        ls -la      
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       run: terraform plan -input=false 
